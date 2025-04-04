@@ -1,0 +1,239 @@
+<!DOCTYPE html><!DOCTYPE HTML>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Navigation Menu</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.95);
+            transition: all 0.4s ease;
+            z-index: 1000;
+        }
+
+        /* Scrolled State */
+        .navbar.scrolled {
+            background: #ffffff;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Logo */
+        .logo {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.4s ease;
+        }
+
+        .navbar.scrolled .logo {
+            color: #2c3e50;
+        }
+
+        /* Navigation Links */
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* Hover Effects */
+        .nav-link:hover {
+            color: #e74c3c;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #e74c3c;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Scrolled State Links */
+        .navbar.scrolled .nav-link {
+            color: #2c3e50;
+        }
+
+        .navbar.scrolled .nav-link:hover {
+            color: #e74c3c;
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            color: rgb(230, 22, 119);
+            font-size: 1.5rem;
+        }
+
+        /* Content Sections */
+        section {
+            padding: 8rem 5%;
+            min-height: 100vh;
+        }
+
+        #home { background: #3068a0; }
+        #about { background: #198daa; }
+        #services { background: #275f97; }
+        #contact { background: #2393af; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: #7c1a1a;
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem;
+                transition: all 0.3s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-link {
+                color: #2c3e50;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Menu -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">Waynenviv</a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#services" class="nav-link">Services</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Page Sections -->
+    <section id="home">
+        <h1>Welcome To Addis</h1>
+    </section>
+
+    <section id="about">
+        <h1>About Us</h1>
+    </section>
+
+    <section id="services">
+        <h1>Our Services</h1>
+    </section>
+
+    <section id="contact">
+        <h1>Contact Us</h1>
+    </section>
+
+    <script>
+        // Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close Mobile Menu on Click Outside
+        document.addEventListener('click', (e) => {
+            if (!menuToggle.contains(e.target) && !navLinks.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Active Link Highlight
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - sectionHeight * 0.25) {
+                    const currentId = section.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${currentId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
